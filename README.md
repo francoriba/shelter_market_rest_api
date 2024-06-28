@@ -1,5 +1,9 @@
 # New World
 
+<details>
+<summary> Problem to solve.. </summary>
+
+
 ## 🎯 Objectives
 This project aims to develop a robust and secure backend in Golang using the Fiber framework. It will serve as the technological backbone for a survival store that strategically manages and sells surplus supplies to other refugee communities.
 
@@ -267,3 +271,136 @@ Our backend application will interface with the existing HPCPP project to access
 > | `200`         | `application/json`                | `{"code":"200",{"message":"success" } `|
 > | `401`         | `application/json`                | `{"code":"401","message":"Unauthorized"}`                           |
 </details>
+
+</details>
+
+
+<details>
+<summary> Solution description </summary>
+
+# Operating Systems Lab 3 Solution Description
+## Architecture 
+![architecture](https://github.com/ICOMP-UNC/newworld-francoriba/assets/80439764/3497ec52-c248-4047-9127-bc201be1f79d)
+
+
+## Project strucure
+I followed [this](https://www.youtube.com/watch?v=EqniGcAijDI&t=453s&ab_channel=AnthonyGG) YT tutorial wich explains how to properly orginize an API project in Go and I made changes for my specific needs. 
+
+## General Details: 
+* I've integrated the frontend project with the API but only for the Register and Login features.
+* Instead of making requests to the API's endpoints  the users will make requests to the configured traefik routes:
+    * ```api.localhost/auth-admin/```
+    * ```vm-api.localhost/supplies?id=latest``` or ```vm-api.localhost/alerts```
+* All endpoints have been implemented and documented with Swagger.
+* Due to lack of time, i've only created tests for the endpoints that I considered most important:
+    *  ```/auth/offers```
+    *  ```/auth/login```
+    *  ```/auth/register```
+    *  ```/admin/users```
+    *  ```/admin/dashboard```
+* Given that the endpoints interacted with the postgres db, I used mocks to achive the creation of the tests.
+* Everything is dockerized, we have different docker containers living insede the docker network ```"market_network"```:
+    * Frontend
+    * Traefik
+    * Go Rest API
+    * PosgresSQL database
+* The HighPermormanceCPP API is not running in docker but in a VBox VM, in order to redirect traffic and request to this API I used a dynamic configuration file for Traefik.
+
+## Endpoints Handlers Implementation Details:
+<details>
+  <summary>/auth/register >> Register</summary>
+  
+  * Handles the registration of a new user.
+  * Processes and validates registration data.
+  * Generates a hash for the user's password.
+  * Creates a new user with the default role and saves it to the database.
+  * Returns an appropriate response based on the operation's outcome.
+  
+</details>
+
+<details>
+  <summary>/auth/login >> Login</summary>
+  
+* Handles user authentication.
+* Processes and validates login credentials.
+* Authenticates the user by verifying the provided credentials.
+* Generates a JWT token if authentication is successful.
+* Returns the JWT token to the client.
+  
+</details>
+
+<details>
+  <summary>/auth/offers >> GetOffers</summary>
+  
+* Retrieves a list of available offers.
+* Verifies authentication via the Authorization header.
+* Validates and decodes the JWT token.
+* Fetches offers from the database and returns them in the response.
+  
+</details>
+
+<details>
+  <summary>/auth/checkout >> Checkout</summary>
+  
+* Handles the checkout process and order creation.
+* Processes and validates checkout request data.
+* Validates offer availability and calculates the total amount.
+* Creates an order in the database and updates the stock of the offers.
+* Returns an appropriate response based on the operation's outcome.
+  
+</details>
+
+<details>
+  <summary>/auth/orders/:id >> GetOrderStatus</summary>
+  
+* Retrieves the status of a specific order.
+* Verifies authentication via the Authorization header.
+* Validates and decodes the JWT token.
+* Retrieves the order ID from the URL and searches for the order in the database.
+* Returns the order status in the response.
+  
+</details>
+
+<details>
+  <summary>/admin/dashboard >> GetDashboard</summary>
+  
+* Retrieves the current status of all orders.
+* Fetches orders and their items from the database.
+* Prepares and returns a response with the dashboard data.
+  
+</details>
+
+<details>
+  <summary>/admin/orders/:id >> UpdateOrderStatus</summary>
+  
+* Updates the status of a specific order.
+* Validates the request and the new status value.
+* Finds the order by ID and updates its status in the database.
+* Returns an appropriate response based on the operation's outcome.
+  
+</details>
+
+<details>
+  <summary>/admin/users >> GetAllUsers</summary>
+  
+* Retrieves all users with the role of "user".
+* Fetches user data from the database.
+* Prepares and returns a response with the list of users.
+  
+</details>
+
+<details>
+  <summary>/admin/users/:id >> DeleteUser</summary>
+  
+* Deletes a user by ID.
+* Finds the user by ID in the database.
+* Deletes the user and returns an appropriate response based on the operation's outcome.
+  
+</details>
+
+## Deployment
+* To deploy this project you just need to clone this project and the [frontend project](https://github.com/GabrielEValenzuela/survivalMarket). Make sure to have both projects in the same directory, otherwise you will need to modify the relative paths of the docker compose file. 
+Then just run ```docker-compose up -d```. You're all set. :thumbsup:
+
+</details>
+
