@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+
+  api:
+    container_name: market-api
+    build:
+      context: ../
+      dockerfile: ./deployment/Dockerfile
+    image: market-api
+    ports:
+      - "3002:3000"
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: new_world_lab3
+      DB_PORT: "5432"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api-router.rule=Host(`api.localhost`)"        # Rule for routing
+      - "traefik.http.routers.api-router.entrypoints=web"                   # Use the web entrypoint
+      - "traefik.http.services.api-service.loadbalancer.server.port=3000"   # Internal port of the container
+    networks:
+      - market_network
+      
+  postgres:
+    container_name: market-database
+    image: postgres
+    ports:
+      - "5434:5432" 
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: new_world_lab3
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - market_network     
+
+  traefik:
+    image: traefik:v3.0.1    
+    container_name: traefik
+    command:
+      - "--api.insecure=true"                             # Enable insecure API for Traefik dashboard (for testing purposes)
+      - "--providers.docker=true"                         # Enable Docker provider
+      - "--configFile=/etc/traefik/traefik.yml"           # Specify the location of the Traefik configuration file
+    ports:
+    - "80:80"                                             # Expose HTTP port
+    - "443:443"                                           # Expose HTTPS port
+    - "8080:8080"                                         # (Optional) Expose Traefik dashboard - Dont to this in production
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock         # Mount Docker socket for dynamic configuration
+      - ./traefik.yml:/etc/traefik/traefik.yml            # Mount Traefik configuration file
+      - ./dynamic.yml:/etc/traefik/dynamic.yml   
+      - traefik-ssl-certs:/ssl-certs                      # Mount volume for SSL certificates
+    networks:
+      - market_network
+
+  frontend:
+    container_name: market-frontend
+    build:
+      context: ../../survivalMarket
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    networks:
+      - market_network
+
+volumes:
+  postgres_data:
+  traefik-ssl-certs:
+
+networks:
+  market_network:
+    name: market_network

@@ -1,0 +1,12 @@
+http:
+  routers:
+    vm-api-router:
+      rule: "Host(`vm-api.localhost`)"
+      service: vm-api-service
+      entryPoints:
+        - web
+  services:
+    vm-api-service:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.0.57:8011"
