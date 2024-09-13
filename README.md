@@ -1,7 +1,7 @@
 # New World
 
 <details>
-<summary> Problem to solve.. </summary>
+<summary> Problem to solve... </summary>
 
 
 ## 🎯 Objectives
@@ -403,4 +403,3 @@ I followed [this](https://www.youtube.com/watch?v=EqniGcAijDI&t=453s&ab_channel=
 Then just run ```docker-compose up -d```. You're all set. :thumbsup:
 
 </details>
-
