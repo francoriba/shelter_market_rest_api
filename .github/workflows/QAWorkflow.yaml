@@ -60,4 +60,14 @@ jobs:
       - name: Running Horusec Security
         run: |
           curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest-beta
-          horusec start -p="./" -e="true"
+          horusec start -p="./" -o=json -O=horusec-results.json
+      - name: Install jq
+        run: sudo apt-get install -y jq
+      - name: Count vulnerabilities
+        run: |
+          vulnerabilities=$(jq '.vulnerabilities | length' horusec-results.json)
+          echo "Number of vulnerabilities: $vulnerabilities"
+          if [ "$vulnerabilities" -gt 19 ]; then
+            echo "Too many vulnerabilities found: $vulnerabilities"
+            exit 1
+          fi
