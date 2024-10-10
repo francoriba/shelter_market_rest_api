@@ -1,0 +1,30 @@
+name: SecurityWorkflow
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main, dev]
+
+jobs:
+  horusec-security:
+    name: horusec-security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Running Horusec Security
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash -s latest-beta
+          horusec start -p="./" -o=json -O=horusec-results.json
+      - name: Count vulnerabilities
+        run: |
+          vulnerabilities=$(jq '.vulnerabilities | length' horusec-results.json)
+          echo "Number of vulnerabilities: $vulnerabilities"
+          if [ "$vulnerabilities" -gt 19 ]; then
+            echo "Too many vulnerabilities found: $vulnerabilities"
+            exit 1
+          fi
