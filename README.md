@@ -402,4 +402,6 @@ I followed [this](https://www.youtube.com/watch?v=EqniGcAijDI&t=453s&ab_channel=
 * To deploy this project you just need to clone this project and the [frontend project](https://github.com/GabrielEValenzuela/survivalMarket). 
 Then just run `docker-compose up -d` from /deployment. You're all set. :thumbsup:
 
+The frontend is integrated as a git submodule, so remember to run ` git submodule update --init`.
+
 </details>
