@@ -399,7 +399,7 @@ I followed [this](https://www.youtube.com/watch?v=EqniGcAijDI&t=453s&ab_channel=
 </details>
 
 ## Deployment
-* To deploy this project you just need to clone this project and the [frontend project](https://github.com/GabrielEValenzuela/survivalMarket). Make sure to have both projects in the same directory, otherwise you will need to modify the relative paths of the docker compose file. 
-Then just run ```docker-compose up -d```. You're all set. :thumbsup:
+* To deploy this project you just need to clone this project and the [frontend project](https://github.com/GabrielEValenzuela/survivalMarket). 
+Then just run `docker-compose up -d` from /deployment. You're all set. :thumbsup:
 
 </details>
