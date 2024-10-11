@@ -62,7 +62,7 @@ services:
   frontend:
     container_name: market-frontend
     build:
-      context: ../../survivalMarket
+      context: ../survivalMarketFrontend
       dockerfile: Dockerfile
     ports:
       - "3000:3000"

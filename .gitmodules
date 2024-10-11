@@ -1,0 +1,3 @@
+[submodule "survivalMarketFrontend"]
+	path = survivalMarketFrontend
+	url = https://github.com/francoriba/survivalMarketFrontend
