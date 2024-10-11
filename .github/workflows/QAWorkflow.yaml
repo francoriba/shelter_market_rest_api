@@ -9,6 +9,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -17,6 +25,18 @@ jobs:
         uses: actions/setup-go@v5
         with:
             go-version: 1.21
+
+      - name: Check environment variables
+        run: |
+          echo "Checking for environment variables:"
+          for var in DB_HOST DB_USER DB_PASSWORD DB_NAME DB_PORT JWT_SECRET_KEY
+          do
+            if [ -n "${!var}" ]; then
+              echo "$var is set"
+            else
+              echo "$var is not set"
+            fi
+          done
 
       - name: Build
         uses: ./.github/actions/build
@@ -42,3 +62,40 @@ jobs:
         with:
           version: v1.56.0
           args: --timeout 3m 
+
+  test-db-connection:
+    runs-on: ubuntu-latest
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.21
+
+      - name: Test Database Connection
+        run: go run .github/scripts/test_db_connection.go
+
+  test-jwt:
+    runs-on: ubuntu-latest
+    env:
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.21
+
+      - name: Test JWT
+        run: go run .github/scripts/test_jwt.go
+        

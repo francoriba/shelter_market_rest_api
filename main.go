@@ -23,10 +23,13 @@ import (
 // @in header
 // @name Authorization
 func main() {
-	// Load environment variables
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Error loading .env file: ", err)
+	// Load .env file only if we're not in a GitHub Actions environment
+	if os.Getenv("GITHUB_ACTIONS") != "true" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Println("Warning: Error loading .env file:", err)
+			// Don't fatal here, as the environment variables might be set another way
+		}
 	}
 
 	dbHost := os.Getenv("DB_HOST")
