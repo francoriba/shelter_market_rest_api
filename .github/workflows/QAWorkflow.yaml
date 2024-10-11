@@ -80,6 +80,18 @@ jobs:
         with:
           go-version: 1.21
 
+      - name: Check environment variables
+        run: |
+          echo "Checking for environment variables:"
+          for var in DB_HOST DB_USER DB_PASSWORD DB_NAME DB_PORT
+          do
+            if [ -n "${!var}" ]; then
+              echo "$var is set"
+            else
+              echo "$var is not set"
+            fi
+          done
+
       - name: Test Database Connection
         run: go run .github/scripts/test_db_connection.go
 
@@ -98,4 +110,3 @@ jobs:
 
       - name: Test JWT
         run: go run .github/scripts/test_jwt.go
-        
