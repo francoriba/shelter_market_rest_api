@@ -36,9 +36,9 @@ jobs:
           token: ${{ secrets.VAULT_TOKEN }}
           namespace: admin
           secrets: |
-            kv/database DB_HOST ;
-            kv/database DB_USER ;
-            kv/database DB_PASSWORD ;
-            kv/database DB_NAME ;
-            kv/database DB_PORT ;
-            kv/jwt JWT_SECRET_KEY
+            kv/data/database DB_HOST ;
+            kv/data/database DB_USER ;
+            kv/data/database DB_PASSWORD ;
+            kv/data/database DB_NAME ;
+            kv/data/database DB_PORT ;
+            kv/data/jwt JWT_SECRET_KEY
