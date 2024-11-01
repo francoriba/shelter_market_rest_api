@@ -20,6 +20,7 @@ jobs:
           url: ${{ secrets.VAULT_ADDR }}
           method: token
           token: ${{ secrets.VAULT_TOKEN }}
+          namespace: admin
           secrets: |
             secrets/data/database DB_HOST ;
             secrets/data/database DB_USER ;
