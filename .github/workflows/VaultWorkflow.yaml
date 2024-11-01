@@ -36,9 +36,9 @@ jobs:
           token: ${{ secrets.VAULT_TOKEN }}
           namespace: admin
           secrets: |
-            secrets/data/database/DB_HOST ;
-            secrets/data/database/DB_USER ;
-            secrets/data/database/DB_PASSWORD ;
-            secrets/data/database/DB_NAME ;
-            secrets/data/database/DB_PORT ;
-            secrets/data/jwt/JWT_SECRET_KEY
+            database DB_HOST ;
+            database DB_USER ;
+            database DB_PASSWORD ;
+            database DB_NAME ;
+            database DB_PORT ;
+            jwt JWT_SECRET_KEY
