@@ -7,11 +7,6 @@ on:
         description: "Status of secrets verification"
         value: ${{ jobs.vault-secrets.outputs.verification_status }}
 
-permissions:
-  contents: read
-  id-token: write
-  actions: read
-
 jobs:
   vault-secrets:
     runs-on: ubuntu-latest
@@ -19,27 +14,16 @@ jobs:
       verification_status: ${{ steps.verify.outputs.status }}
     
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Debug Environment
-        run: |
-          echo "GitHub Actions environment: ${{ github.action }}"
-          echo "Event name: ${{ github.event_name }}"
-          echo "Repository: ${{ github.repository }}"
-
       - name: Debug Secrets
         run: |
           echo "Checking secrets availability..."
           if [ -n "${{ secrets.VAULT_ADDR }}" ]; then
             echo "VAULT_ADDR is set"
-            echo "VAULT_ADDR length: ${#VAULT_ADDR}"
           else
             echo "VAULT_ADDR is not set"
           fi
           if [ -n "${{ secrets.VAULT_TOKEN }}" ]; then
             echo "VAULT_TOKEN is set"
-            echo "VAULT_TOKEN length: ${#VAULT_TOKEN}"
           else
             echo "VAULT_TOKEN is not set"
           fi
