@@ -1,0 +1,63 @@
+name: Vault Workflow
+
+on:
+  workflow_call:
+    outputs:
+        secrets_status:
+          description: "Status of secrets verification"
+          value: ${{ jobs.vault-secrets.outputs.verification_status }}
+
+jobs:
+  vault-secrets:
+    runs-on: ubuntu-latest
+    outputs:
+      verification_status: ${{ steps.verify.outputs.status }}
+    
+    steps:
+      - name: Import Secrets from HCP Vault
+        uses: hashicorp/vault-action@v2
+        with:
+          url: ${{ secrets.VAULT_ADDR }}
+          method: token
+          token: ${{ secrets.VAULT_TOKEN }}
+          secrets: |
+            secrets/data/database DB_HOST ;
+            secrets/data/database DB_USER ;
+            secrets/data/database DB_PASSWORD ;
+            secrets/data/database DB_NAME ;
+            secrets/data/database DB_PORT ;
+            secrets/data/jwt JWT_SECRET_KEY
+
+      - name: Verify Secrets
+        id: verify
+        run: |
+          echo "Checking for required secrets..."
+          missing_secrets=0
+          
+          check_secret() {
+            local secret_name=$1
+            if [ -z "${!secret_name}" ]; then
+              echo "❌ $secret_name is missing or empty"
+              return 1
+            else
+              echo "✅ $secret_name is set and not empty"
+              echo "   Length: ${#secret_name}"
+              echo "   First character: ${!secret_name:0:1}*****"
+              return 0
+            fi
+          }
+          
+          for secret in DB_HOST DB_USER DB_PASSWORD DB_NAME DB_PORT JWT_SECRET_KEY; do
+            if ! check_secret $secret; then
+              missing_secrets=$((missing_secrets + 1))
+            fi
+          done
+          
+          if [ $missing_secrets -gt 0 ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "Error: Missing $missing_secrets required secrets"
+            exit 1
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "All required secrets are present! ✅"
+          fi 
