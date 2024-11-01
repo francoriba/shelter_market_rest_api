@@ -6,16 +6,12 @@ on:
     types: [synchronize, opened, reopened, ready_for_review]
 
 jobs:
+  secrets:
+    uses: ./.github/workflows/VaultWorkflow.yaml
+    secrets: inherit  #  allows the called workflow to access secrets
   build:
+    needs: secrets
     runs-on: ubuntu-latest
-
-    env:
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_NAME: ${{ secrets.DB_NAME }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
 
     steps:
       - name: Checkout repository
@@ -62,19 +58,3 @@ jobs:
         with:
           version: v1.56.0
           args: --timeout 3m 
-
-  test-jwt:
-    runs-on: ubuntu-latest
-    env:
-      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 1.21
-
-      - name: Test JWT
-        run: go run .github/scripts/test_jwt.go
