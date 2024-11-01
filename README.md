@@ -446,28 +446,28 @@ The workflow consists of the following key steps:
 1. **Create a Vault Cluster**  
    Start by creating a Vault cluster. You can follow the detailed instructions in [this tutorial](https://developer.hashicorp.com/vault/tutorials/get-started-hcp-vault-dedicated/create-cluster).
 
-   <img src="image.png" alt="Vault Cluster Creation" width="700"/>
+   <img src="img/image.png" alt="Vault Cluster Creation" width="700"/>
 
 2. **Generate an Access Token**  
    Once your cluster is set up, you’ll need to create a token to manage the cluster's secrets engines. This token is crucial for authenticating your requests.
 
-   <img src="image-1.png" alt="Create Token" width="700"/>
+   <img src="img/image-1.png" alt="Create Token" width="700"/>
 
 3. **Set Up a KV v2 Secrets Engine**  
    With your token, access the Vault interface to create secrets. For CI pipeline integrations, like GitHub Actions, it's essential to use a KV v2 secrets engine. Make sure to configure this properly.
 
-   <img src="image-3.png" alt="KV v2 Engine Setup" width="400"/>
+   <img src="img/image-3.png" alt="KV v2 Engine Setup" width="400"/>
 
 
 4. **Define Secret Paths**  
    When creating secrets, you'll be prompted to specify paths for those secrets. For example, I used the following paths: `database` and `jwt`.
 
-   <img src="image-4.png" alt="Secret Paths" width="550"/>
+   <img src="img/image-4.png" alt="Secret Paths" width="550"/>
 
 5. **Interact with Vault Using CLI**  
    You can also interact with Vault through the Vault CLI. This method allows for programmatic access to your secrets and configuration.
 
-   <img src="image-2.png" alt="Vault CLI Interaction" width="500"/>
+   <img src="img/image-2.png" alt="Vault CLI Interaction" width="500"/>
 
 ### Important Notes for KV v2 Usage
 
