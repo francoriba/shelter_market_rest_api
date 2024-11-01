@@ -17,7 +17,7 @@ jobs:
       - name: Import Secrets from HCP Vault
         uses: hashicorp/vault-action@v2
         with:
-          url: ${{ secrets.VAULT_ADDR }}
+          url: https://vault-cluster-public-vault-49894c2c.9446797c.z1.hashicorp.cloud:8200
           method: token
           token: ${{ secrets.VAULT_TOKEN }}
           namespace: admin
