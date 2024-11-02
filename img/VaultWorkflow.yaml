@@ -1,0 +1,44 @@
+name: Vault Workflow
+
+on:
+  workflow_call:
+    outputs:
+      secrets_status:
+        description: "Status of secrets verification"
+        value: ${{ jobs.vault-secrets.outputs.verification_status }}
+
+jobs:
+  vault-secrets:
+    runs-on: ubuntu-latest
+    outputs:
+      verification_status: ${{ steps.verify.outputs.status }}
+    
+    steps:
+      - name: Debug Github Secrets # the 2 secrets needed for the vault action
+        run: |
+          echo "Checking secrets availability..."
+          if [ -n "${{ secrets.VAULT_ADDR }}" ]; then
+            echo "VAULT_ADDR is set"
+          else
+            echo "VAULT_ADDR is not set"
+          fi
+          if [ -n "${{ secrets.VAULT_TOKEN }}" ]; then
+            echo "VAULT_TOKEN is set"
+          else
+            echo "VAULT_TOKEN is not set"
+          fi
+
+      - name: Import Secrets from HCP Vault
+        uses: hashicorp/vault-action@v2
+        with:
+          url: ${{ secrets.VAULT_ADDR }}
+          method: token
+          token: ${{ secrets.VAULT_TOKEN }}
+          namespace: admin
+          secrets: |
+            kv/data/database DB_HOST ;
+            kv/data/database DB_USER ;
+            kv/data/database DB_PASSWORD ;
+            kv/data/database DB_NAME ;
+            kv/data/database DB_PORT ;
+            kv/data/jwt JWT_SECRET_KEY

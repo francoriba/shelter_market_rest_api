@@ -405,3 +405,73 @@ Then just run `docker-compose up -d` from /deployment. You're all set. :thumbsup
 The frontend is integrated as a git submodule, so remember to run ` git submodule update --init`.
 
 </details>
+
+## Security Workflow
+
+Our project includes a **Security Workflow** powered by [Horusec](https://horusec.io/), a security tool for static analysis of code. This workflow is designed to automatically check for vulnerabilities in the codebase during pull requests and pushes to the main and development branches. Here’s how it works:
+
+### Workflow Triggers
+
+The Security Workflow is triggered under the following conditions:
+- **Manual Dispatch**: You can trigger the workflow manually through the GitHub Actions interface.
+- **Pull Requests**: The workflow runs when a pull request is opened, synchronized (updated), or reopened.
+- **Push Events**: The workflow runs when code is pushed to the `main` or `dev` branches.
+
+### Workflow Steps
+
+The workflow consists of the following key steps:
+
+1. **Check Out Code**:
+   - The workflow begins by checking out the code from the repository using the `actions/checkout` action. This allows the workflow to access the current codebase for analysis.
+
+2. **Run Horusec Security**:
+   - The workflow installs Horusec using a shell script and starts the security analysis on the codebase. The command used is:
+     ```bash
+     horusec start -p="./" -o=json -O=horusec-results.json
+     ```
+   - This command scans the code for vulnerabilities and outputs the results in JSON format, saving them to `horusec-results.json`.
+
+3. **Count Vulnerabilities**:
+   - After running the security analysis, the workflow counts the number of vulnerabilities found using the `jq` command:
+     ```bash
+     vulnerabilities=$(jq '.vulnerabilities | length' horusec-results.json)
+     ```
+   - The workflow then checks if the number of vulnerabilities exceeds a threshold (19 in this case). If it does, the workflow will fail, and an error message will be displayed:
+     ```bash
+     Too many vulnerabilities found: $vulnerabilities
+     ```
+
+## Vault Integration for Secrets
+
+1. **Create a Vault Cluster**  
+   Start by creating a Vault cluster. You can follow the detailed instructions in [this tutorial](https://developer.hashicorp.com/vault/tutorials/get-started-hcp-vault-dedicated/create-cluster).
+
+   <img src="img/image.png" alt="Vault Cluster Creation" width="700"/>
+
+2. **Generate an Access Token**  
+   Once your cluster is set up, you’ll need to create a token to manage the cluster's secrets engines. This token is crucial for authenticating your requests.
+
+   <img src="img/image-1.png" alt="Create Token" width="700"/>
+
+3. **Set Up a KV v2 Secrets Engine**  
+   With your token, access the Vault interface to create secrets. For CI pipeline integrations, like GitHub Actions, it's essential to use a KV v2 secrets engine. Make sure to configure this properly.
+
+   <img src="img/image-3.png" alt="KV v2 Engine Setup" width="400"/>
+
+
+4. **Define Secret Paths**  
+   When creating secrets, you'll be prompted to specify paths for those secrets. For example, I used the following paths: `database` and `jwt`.
+
+   <img src="img/image-4.png" alt="Secret Paths" width="550"/>
+
+5. **Interact with Vault Using CLI**  
+   You can also interact with Vault through the Vault CLI. This method allows for programmatic access to your secrets and configuration.
+
+   <img src="img/image-2.png" alt="Vault CLI Interaction" width="500"/>
+
+### Important Notes for KV v2 Usage
+
+- **Path Structure**: When using KV v2 (the default in newer Vault installations), you must include `data` in your path when accessing secrets.
+- **Version Management**: If you need to specify a version, be aware that the default is the latest version of the secret. 
+
+By following these steps, you can effectively integrate Vault for managing secrets in your applications and CI/CD pipelines.
