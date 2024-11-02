@@ -7,7 +7,7 @@ on:
 
 jobs:
   secrets:
-    uses: ./.github/workflows/VaultWorkflow.yaml
+    uses: .github/workflows/VaultWorkflow.yaml
     secrets: inherit  #  allows the called workflow to access secrets
   build:
     needs: secrets
