@@ -469,6 +469,8 @@ The workflow consists of the following key steps:
 
    <img src="img/image-2.png" alt="Vault CLI Interaction" width="500"/>
 
+  > **Note:** The vault token expieres in 6 hours, so it should be manually renewed from the cluster and updated in github secrets. A better option would be an aditional actions workflow to do an automatic renewal every 4 or 5 hours, the workflow should renew the token using Vault's API and update the values stored in github secrets using Github's API.
+
 ### Important Notes for KV v2 Usage
 
 - **Path Structure**: When using KV v2 (the default in newer Vault installations), you must include `data` in your path when accessing secrets.
