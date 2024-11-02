@@ -29,3 +29,8 @@ docs/architecture.png
 
 .DS_Store
 app/.DS_Store
+
+# SonarQube
+.scannerwork
+coverage.out
+test-report.json

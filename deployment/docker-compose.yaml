@@ -69,9 +69,43 @@ services:
     networks:
       - market_network
 
+  sonarqube:
+    image: sonarqube:latest
+    container_name: market-sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_JDBC_URL=jdbc:postgresql://sonarqube-db:5432/sonar
+      - SONAR_JDBC_USERNAME=sonar
+      - SONAR_JDBC_PASSWORD=sonar
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    networks:
+      - market_network
+    depends_on:
+      - sonarqube-db
+
+  sonarqube-db:
+    image: postgres:12
+    container_name: market-sonarqube-db
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+      - POSTGRES_DB=sonar
+    volumes:
+      - sonarqube_db:/var/lib/postgresql/data
+    networks:
+      - market_network
+
 volumes:
   postgres_data:
   traefik-ssl-certs:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  sonarqube_db:
 
 networks:
   market_network:

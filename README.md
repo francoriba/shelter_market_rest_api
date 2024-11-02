@@ -474,4 +474,55 @@ The workflow consists of the following key steps:
 - **Path Structure**: When using KV v2 (the default in newer Vault installations), you must include `data` in your path when accessing secrets.
 - **Version Management**: If you need to specify a version, be aware that the default is the latest version of the secret. 
 
-By following these steps, you can effectively integrate Vault for managing secrets in your applications and CI/CD pipelines.
+## SonarQube Integration
+
+SonarQube is a static code analysis tool that helps ensure code quality. We have integrated SonarQube into our project using Docker Compose with the official SonarQube image available at Docker Hub.
+
+### Accessing SonarQube
+
+Once you deploy the project, you can access the SonarQube interface at [http://localhost:9000](http://localhost:9000). 
+
+If you're running on Linux and encounter issues with the UI loading, you may need to adjust your VM settings. Run the following commands to do so:
+
+```bash
+echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+```
+
+After making this change, remember to restart your Docker containers with:
+
+```bash
+docker-compose down
+```
+
+### Default Credentials
+
+The default credentials for the SonarQube interface are:
+
+- **Username:** admin
+- **Password:** admin
+
+From there continue with the setup
+
+![alt text](img/image-6.png)
+
+### CI Pipeline Integration
+
+To integrate SonarQube into your CI pipeline, you will need to generate an access token from the SonarQube interface. Follow these steps:
+
+1. Navigate to **User > My Account > Security**.
+2. Click on **Generate Token**.
+3. Store this token securely in your GitHub Secrets or Vault.
+
+**Important:** You'll need to set a `SONAR_HOST_URL` that is accessible from the GitHub Actions runner. Note that localhost will not work; consider configuring a tunnel or using a public URL.
+
+### Additional Considerations
+
+- Add SonarQube-related files to your `.gitignore` to prevent them from being tracked in version control.
+- Update your project documentation to include setup instructions for SonarQube.
+- Configure quality gates in SonarQube to enforce your project's code quality standards.
+- Consider adding SonarQube badges to your `README.md` to display code quality metrics.
+
+Then we can start to review different metrics provided by sonarqube, for example the cyclomatic compexity:
+
+![alt text](img/image-5.png)
