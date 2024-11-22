@@ -440,8 +440,13 @@ The workflow consists of the following key steps:
      ```bash
      Too many vulnerabilities found: $vulnerabilities
      ```
+4. **Things to consider**:
+  - The Horusec anlysis also considers tests files for vulnerabilities, this causes a lot of situations of false positives given that tests and mocks often use code practices that might be considered bad practices in normal situations, but not in the case of test files. 
+
 
 ## Vault Integration for Secrets
+
+[Basic vault concepts](https://medium.com/@martin.hodges/vault-secrets-engines-paths-and-roles-explained-aa3e1a84037d)
 
 1. **Create a Vault Cluster**  
    Start by creating a Vault cluster. You can follow the detailed instructions in [this tutorial](https://developer.hashicorp.com/vault/tutorials/get-started-hcp-vault-dedicated/create-cluster).
