@@ -11,7 +11,7 @@ jobs:
   vault-secrets:
     runs-on: ubuntu-latest
     outputs:
-      verification_status: ${{ steps.verify.outputs.status }}
+      verification_status: ${{ steps.verify.outputs.status }} # make the status  of the verification available for other workflows
     
     steps:
       - name: Debug Github Secrets # the 2 secrets needed for the vault action
