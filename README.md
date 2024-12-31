@@ -406,7 +406,12 @@ The frontend is integrated as a git submodule, so remember to run ` git submodul
 
 </details>
 
-## Security Workflow
+
+
+<details>
+  <summary> Additional tools used for Software Quality Management</summary>
+  
+  ## Security Workflow
 
 Our project includes a **Security Workflow** powered by [Horusec](https://horusec.io/), a security tool for static analysis of code. This workflow is designed to automatically check for vulnerabilities in the codebase during pull requests and pushes to the main and development branches. Here’s how it works:
 
@@ -533,3 +538,5 @@ To integrate SonarQube into your CI pipeline, you will need to generate an acces
 Then we can start to review different metrics provided by sonarqube, for example the cyclomatic compexity:
 
 ![alt text](img/image-5.png)
+
+</details>
